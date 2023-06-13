@@ -17,27 +17,27 @@ const routes = [
     layout: PublicLayout, // Specify the layout component for this route
   },
   {
-    path: "login",
+    path: "/login",
     component: Login,
     layout: PublicLayout,
   },
   {
-    path: "register",
+    path: "/register",
     component: Register,
     layout: PublicLayout,
   },
   {
-    path: "profile",
+    path: "/profile",
     component: Profile,
     layout: PublicLayout,
   },
   {
-    path: "identify",
+    path: "/identify",
     component: CatBreedIdentifier,
     layout: PublicLayout,
   },
   {
-    path: "gallery",
+    path: "/gallery",
     component: CatGallery,
     layout: PublicLayout,
   },
