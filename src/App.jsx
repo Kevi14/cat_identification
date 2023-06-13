@@ -17,6 +17,11 @@ const routes = [
     layout: PublicLayout, // Specify the layout component for this route
   },
   {
+    path: "/identify",
+    component: CatBreedIdentifier,
+    layout: PublicLayout,
+  },
+  {
     path: "/login",
     component: Login,
     layout: PublicLayout,
@@ -31,11 +36,7 @@ const routes = [
     component: Profile,
     layout: PublicLayout,
   },
-  {
-    path: "/identify",
-    component: CatBreedIdentifier,
-    layout: PublicLayout,
-  },
+
   {
     path: "/gallery",
     component: CatGallery,
@@ -44,14 +45,16 @@ const routes = [
 ];
 
 const router = createBrowserRouter(
-  routes.map((route) => ({
+  routes.map((route) => {
+  console.info(route)
+  return({
     path: route.path,
     element: (
       <route.layout>
         <route.component />
       </route.layout>
     ),
-  }))
+  })})
 );
 
 function App() {

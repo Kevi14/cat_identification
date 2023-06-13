@@ -24,7 +24,7 @@ const items = [
 function HeroSection() {
     const navigate = useNavigate()
     const  goToIdentify = () =>{
-        location.pathname="/identify"
+        navigate("/identify")
     }
     return (
         <Box

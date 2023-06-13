@@ -35,6 +35,12 @@ export function Navbar() {
     handleMenuClose();
     navigate("/gallery");
   };
+  
+  const handleIdentifyClick = () => {
+    handleMenuClose();
+    navigate("/identify");
+  };
+
 
   return (
     <AppBar position="static">
@@ -50,6 +56,8 @@ export function Navbar() {
             </Avatar>
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
               <MenuItem onClick={handleProfileClick}>Profile</MenuItem>
+              
+              <MenuItem onClick={handleIdentifyClick}>Identify</MenuItem>
               <MenuItem onClick={handleGalleryClick}>Gallery</MenuItem>
 
               <MenuItem onClick={handleLogoutClick}>Logout</MenuItem>
