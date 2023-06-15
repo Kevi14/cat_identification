@@ -8,74 +8,104 @@ import {
   CardContent,
   Container,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { register as apiRegister } from "../../api";
-// Component to display form errors
-const FormError = ({ error }) => (
-  <Typography variant="body2" className="form-error">
-    {error}
-  </Typography>
-);
+import { Snackbar } from "@mui/material";
+import { useState } from "react";
 
-// Custom component for form text field with error handling
-// Custom component for form text field with error handling
-const FormTextField = ({
-    label,
-    name,
-    type = "text",
-    register,
-    errors,
-    required = false
-  }) => {
-    // Check if the field is the email field
-    const isEmailField = name === "email";
-  
-    return (
-      <>
-        {errors[name] && (
-          <FormError error={errors[name].message || "This field is required."} />
-        )}
-        <TextField
-          label={label}
-          type={type}
-          variant="outlined"
-          {...register(name, {
-            required,
-            ...(isEmailField && {
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email address."
-              }
-            })
-          })}
-          sx={{ marginBottom: 2, width: "100%" }}
-        />
-      </>
-    );
+const getErrorFromCode = (code) => {
+  const error = {
+    unique: "Field is required",
+    password_too_short: "Make sure the password is between 8 and 16 characters",
+    password_too_common: "Password is too common",
   };
+  return error[code] ?? "Error";
+};
+
+const FormError = ({ errors }) => {
+  return (
+    <Typography variant="body2" className="form-error">
+      {typeof errors === "string" && <div key="general-error">{errors}</div>}
+      {Array.isArray(errors) &&
+        errors.map((errorObject, index) =>
+          Object.entries(errorObject).map(([field, fieldErrors]) =>
+            Array.isArray(fieldErrors) ? (
+              fieldErrors.map((error, subIndex) => (
+                <div key={`${field}-${subIndex}`}>
+                  {getErrorFromCode(error) || "asd"}
+                </div>
+              ))
+            ) : (
+              <>
+              <div key={`${field}-${index}`}>{fieldErrors}</div>
+              </>
+            )
+          )
+        )}
+    </Typography>
+  );
+};
+
+const FormTextField = ({
+  label,
+  name,
+  type = "text",
+  register,
+  errors,
+  required = false,
+  api_errors,
+}) => {
+  const isEmailField = name === "email";
+  const apiErrors = api_errors ?api_errors.filter((item) =>{
+    console.log('item',Object.keys(item)[0])
+    return Object.keys(item)[0] === name}) :[]
   
+  return (
+    <>
+      {errors[name] && (
+        <FormError errors={errors[name].message || "This field is required."} />
+      )}
+      {apiErrors && <FormError errors={apiErrors} />}
+      <TextField
+        label={label}
+        type={type}
+        variant="outlined"
+        {...register(name, {
+          required,
+          ...(isEmailField && {
+            pattern: {
+              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+              message: "Invalid email address.",
+            },
+          }),
+        })}
+        sx={{ marginBottom: 2, width: "100%" }}
+      />
+    </>
+  );
+};
 
 export default function Register() {
   const {
     handleSubmit,
     formState: { errors },
-    register
+    register,
   } = useForm();
   const navigate = useNavigate();
-
+  const [error, setError] = useState("");
 
   const onSubmit = async (data) => {
     try {
       const response = await apiRegister(data);
-      // Handle successful registration
       console.log("Registration successful:", response);
-      navigate("/login"); // Redirect to login page after successful registration
+      navigate("/login");
     } catch (error) {
-      // Handle registration error
-      console.log("Registration error:", error);
+      console.info(error?.response?.data?.error?.details);
+      setError(error?.response?.data?.error?.details);
     }
   };
+
   return (
     <Container maxWidth="md">
       <Card sx={{ maxWidth: 400, margin: "auto", marginTop: 5 }}>
@@ -98,6 +128,7 @@ export default function Register() {
               name="email"
               register={register}
               errors={errors}
+              api_errors={error}
               required
             />
 
@@ -106,6 +137,7 @@ export default function Register() {
               name="firstName"
               register={register}
               errors={errors}
+              api_errors={error}
               required
             />
 
@@ -114,6 +146,7 @@ export default function Register() {
               name="lastName"
               register={register}
               errors={errors}
+              api_errors={error}
               required
             />
 
@@ -123,6 +156,7 @@ export default function Register() {
               type="password"
               register={register}
               errors={errors}
+              api_errors={error}
               required
             />
 
@@ -131,6 +165,7 @@ export default function Register() {
               name="password2"
               type="password"
               register={register}
+              api_errors={error}
               errors={errors}
               required
             />
