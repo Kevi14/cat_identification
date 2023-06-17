@@ -12,6 +12,9 @@ import { login } from "../../api";
 import { setAccessToken, setRefreshToken } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import GoogleAuth from "../components/GoogleAuth";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -37,19 +40,44 @@ export default function Login() {
   };
 
   return (
-    <Container maxWidth="md">
-      <Card sx={{ maxWidth: 400, margin: "auto", marginTop: 5 }}>
-        <CardContent>
+    <Container maxWidth="md" sx={{display:"flex",alignItems:'center',justifyContent:"center"}}>
+      <Card sx={{ maxWidth: 400, marginTop: 5,
+              boxShadow: "5px 5px 10px 10px #D4D4D4",
+              minWidth:"350px"
+            }}>
+        <CardContent sx={{display:"flex",flexDirection:"column",alignItems:'center',}} >
           <Typography variant="h5" component="h2" gutterBottom>
-            Login
+            Log in to Cat AI
           </Typography>
+          <Button
+  // variant="contained"
+  // color="primary"
+  sx={{
+    background: "white",
+    padding: "6px 16px",
+    boxShadow: "none",
+    color: "black",
+    '&:hover': {
+      background: "lightgray",
+    },
+  }}
+>
+  
+  <FontAwesomeIcon icon={faGoogle} size="lg" style={{ marginRight: "8px" }} />
+  Login with Google
+</Button>
+<GoogleAuth/>
+
+<Typography>Or</Typography>
           <Box
             component="form"
             sx={{
+              width:"100%",
               display: "flex",
               flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
+              // justifyContent: "center",
+              // alignItems: "center",
+              marginTop:2
             }}
             onSubmit={handleSubmit}
           >
